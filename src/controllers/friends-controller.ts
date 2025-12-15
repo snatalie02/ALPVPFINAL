@@ -26,6 +26,21 @@ export class FriendsController {
     }
   }
 
+  static async search(req: Request, res: Response, next: NextFunction) {
+                      // req : diff from suggestion & friends : current user id & username 
+                      // req contains what the user type (the username that searched)
+    try {
+      const usernameQuery = req.query.username as string;
+      // get what the user typed as string
+      const users = await FriendsService.searchUsers(usernameQuery);
+      res.json({
+        data: users,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
+
 }
 
 

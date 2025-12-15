@@ -1,4 +1,3 @@
-
 import { AddFriendRequest } from "../models/friends-model"
 import { prismaClient } from "../utils/database-util"
 import { ResponseError } from "../error/response-error"
@@ -73,6 +72,22 @@ export class FriendsService {
     })
 
     return suggestions // return id & name for strangers
+  }
+
+  static async searchUsers(query: string) {
+
+      return prismaClient.user.findMany({
+        where: {
+          username: {
+            contains: query, // find in user table username column where username contains the searched letter
+            mode: "insensitive", // "ALI" == "ali" 
+          },
+        },
+        select: {
+          id: true, // returns only id & username
+          username: true,
+        },
+      })
   }
 
 }

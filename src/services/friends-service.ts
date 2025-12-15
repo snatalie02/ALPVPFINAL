@@ -1,3 +1,4 @@
+
 import { AddFriendRequest } from "../models/friends-model"
 import { prismaClient } from "../utils/database-util"
 import { ResponseError } from "../error/response-error"
@@ -39,6 +40,39 @@ export class FriendsService {
           time_stamp: "2025-12-12T08:00:00Z"
         }
   */
+  }
+
+  // BAGIAN getSuggestions SEMUA : SHARON
+  static async getSuggestions(currentUserId: number) {
+
+    // 1. Get all friend IDs of current user
+    const friendships = await prismaClient.friends.findMany({
+      where: { following_user_id: currentUserId },
+      // Filters friends table (contains many relationship) to only rows where following_user_id equals currentUserId 
+      select: { followed_user_id: true }
+      // select the friend's id if followed by the current user
+    })
+    // friendships = [ { followed_user_id: 2 }, { followed_user_id: 5 }]
+
+    const friendIds = friendships.map(f => f.followed_user_id) 
+    // list of followed_user_id 
+    // friendIds = [2, 5]
+
+    // 2. Query all users NOT in that list, and not current user
+    const suggestions = await prismaClient.user.findMany({
+      where: {
+        id: {
+          not: currentUserId, // not the user
+          notIn: friendIds // not friend
+        }
+      },
+      select: {
+        id: true,
+        username: true
+      }
+    })
+
+    return suggestions // return id & name for strangers
   }
 
 }

@@ -16,4 +16,18 @@ export class FriendsController {
     }
   }
 
+  static async getSuggestions(req: Request & { user?: any }, res: Response, next: NextFunction) {
+    try {
+      const currentUser = req.user
+      const response = await FriendsService.getSuggestions(currentUser.id)
+      res.status(200).json({ data: response })
+    } catch (error) { 
+      next(error)
+    }
+  }
+
 }
+
+
+
+

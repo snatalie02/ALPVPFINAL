@@ -6,6 +6,54 @@ import { FriendsValidation } from "../validations/friends-validation"
 
 export class FriendsService {
 
+  static async addFriend(currentUserId: number, req: AddFriendRequest) {
+    // req : friend's username
+
+    const validated = Validation.validate(FriendsValidation.ADD_FRIEND, req)
+    // output : friend's name (format validated)
+
+    const friend = await prismaClient.user.findUnique({ where: { username: validated.username } }) 
+    // find friend by username 
+    if (!friend) throw new ResponseError(400, "User not found")
+      // check if the friends data exist in database
+
+    if (friend.id === currentUserId) throw new ResponseError(400, "Cannot add yourself as friend")
+
+    // Check already friends or no 
+    // even tho frontend alrd hv func if friends the add button won't show but if frontend bypassed won't be an error
+    const exists = await prismaClient.friends.findUnique({
+      where: {
+        following_user_id_followed_user_id: {
+          following_user_id: currentUserId,
+          followed_user_id: friend.id
+        }
+      }
+    }).catch(() => null)
+
+    if (exists) throw new ResponseError(400, "Already friends")
+
+    // Create mutual friendship in a transaction
+    await prismaClient.$transaction([
+      // transaction : ensures both inserts succeed or both fail.
+      // making the selected friend be user's friend
+      prismaClient.friends.create({
+        data: {
+          following_user_id: currentUserId,
+          followed_user_id: friend.id
+        }
+      }), 
+      // making the user's be the selected friend's friend
+      prismaClient.friends.create({
+        data: {
+          following_user_id: friend.id,
+          followed_user_id: currentUserId
+        }
+      })
+    ])
+
+    return "Friend added successfully (mutual)"
+  }
+
   static async getFriends(currentUserId: number) {
     const friends = await prismaClient.friends.findMany({
       // friends.findMany : queries the friends table in your database
@@ -91,6 +139,11 @@ export class FriendsService {
   }
 
 }
+
+
+
+
+
 
 
 

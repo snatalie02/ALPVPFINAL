@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // Connects Prisma to your PostgreSQL database.
+  url      = env("DATABASE_URL") // gets the connection string from .env
+}
+
+model User { 
+  id                  Int       @id @default(autoincrement())
+  username            String    @unique @db.VarChar(100)
+  password            String    @db.VarChar(200)
+  target_calories_burn Int?     @default(0)
+  total_calories_burn Int?      @default(0)
+
+  // relations
+  following Friends[] @relation("following")
+  followed  Friends[] @relation("followed")
+
+  @@map("users")
+}
+
+model Friends {
+  id                 Int     @id @default(autoincrement())
+  following_user_id  Int
+  followed_user_id   Int
+  duration_streak    Int     @default(0)
+  has_set_streak_today Boolean @default(false)
+  time_stamp         DateTime @default(now())
+
+  // relations
+  following_user User @relation("following", fields: [following_user_id], references: [id], onDelete: Cascade)
+  followed_user  User @relation("followed", fields: [followed_user_id], references: [id], onDelete: Cascade)
+
+  @@unique([following_user_id, followed_user_id]) // prevent duplicate pair
+  // Prisma auto-generates the composite unique identifier name as : following_user_id_followed_user_id
+  @@map("friends")
+}
+
+model WorkoutList {
+  id           Int    @id @default(autoincrement())
+  workout_name String @db.VarChar(100)
+  calories     Int
+  @@map("workout_list")
+}
+
+model HistoryWorkouts {
+  id                  Int   @id @default(autoincrement())
+  workout_list_id     Int
+  user_id             Int
+  calories_total_burn Int
+  duration            Int // minutes
+  time_stamp          DateTime @default(now())
+
+  @@map("history_workouts")
+}
+

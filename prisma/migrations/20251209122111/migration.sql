@@ -1,3 +1,19 @@
+-- fungsi file ini Blueprint SQL yang Prisma generate otomatis dari schema.prisma
+
+-- Isinya:
+-- CREATE TABLE → bikin tabel
+-- CREATE INDEX → bikin unique constraint
+-- ALTER TABLE ... FOREIGN KEY → bikin relasi
+-- ⚠️ PENTING
+-- TIDAK nulis file ini manual
+-- Prisma yang nulis
+-- JANGAN edit isinya
+
+-- file muncul krn: 
+-- 1. edit schema.prisma 
+-- 2. jalani npx prisma migrate dev --name init_tables
+-- 3. Prisma: bandingin schema vs DB, generate SQL, simpan SQL ke migration.sql, eksekusi SQL ke PostgreSQL, catet ke _prisma_migrations
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" SERIAL NOT NULL,

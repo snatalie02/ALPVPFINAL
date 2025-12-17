@@ -62,3 +62,17 @@ model HistoryWorkouts {
   @@map("history_workouts")
 }
 
+//tutorial bikin tabel database: 
+// 1. bikin model di schema.prisma (desain tabel)
+// 2. nambahin relasi kalo perlu
+// 3. prisma migrate dev --name <nama_migrasi> (buat tabel di db berdasarkan model di schema.prisma)
+// 4. prisma baca schema.prisma, generate SQL, bikin tabel di PostgreSQL
+// 5. folder dibuat: prisma/migrations/
+// 6. generate client --> npx prisma generate
+// 7. cek hasil di pgAdmin
+// 8. isi data di SQL/Prisma
+
+
+//_prisma_migrations = log riwayat perubahan database
+// ✔ Tabel dibuat dari schema.prisma
+// ✔ Terminal cuma “tombol eksekusi”

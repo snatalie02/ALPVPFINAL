@@ -24,6 +24,8 @@ model User {
   following Friends[] @relation("following")
   followed  Friends[] @relation("followed")
 
+  history_workouts HistoryWorkouts[]
+
   @@map("users")
 }
 
@@ -47,7 +49,10 @@ model Friends {
 model WorkoutList {
   id           Int    @id @default(autoincrement())
   workout_name String @db.VarChar(100)
-  calories     Int
+  description String? @db.Text
+  calories_per_minute     Int @default(5)
+
+  history HistoryWorkouts[]
   @@map("workout_list")
 }
 
@@ -56,9 +61,12 @@ model HistoryWorkouts {
   workout_list_id     Int
   user_id             Int
   calories_total_burn Int
-  duration            Int // minutes
+  duration            Int
+  reps                Int
   time_stamp          DateTime @default(now())
 
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  workout WorkoutList @relation(fields: [workout_list_id], references: [id], onDelete: Cascade)
   @@map("history_workouts")
 }
 

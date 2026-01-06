@@ -1,3 +1,5 @@
+//service --> chef bagian logic
+
 import { StreakCheckInRequest, StreakResponse, StreakStatusResponse } from "../models/streak-model"
 import { prismaClient } from "../utils/database-util"
 import { ResponseError } from "../error/response-error"

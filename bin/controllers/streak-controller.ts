@@ -1,3 +1,5 @@
+//controller --> waiter
+
 import { Request, Response, NextFunction } from "express"
 import { StreakService } from "../services/streak-service"
 

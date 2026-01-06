@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql" // Connects Prisma to your PostgreSQL database.
-  url      = env("DATABASE_URL") // gets the connection string from .env
+  url      = env("DATABASE_URL?timezone=Asia/Jakarta") // gets the connection string from .env
 }
 
 model User { 

@@ -1,3 +1,5 @@
+//jalan --> routes
+
 import express from "express"
 import { authMiddleware } from "../middlewares/auth-middleware"
 import { FriendsController } from "../controllers/friends-controller"

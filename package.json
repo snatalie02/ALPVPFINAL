@@ -38,5 +38,6 @@
   },
   "prisma": {
     "seed": "ts-node src/prisma/seed.ts"
+    
   }
 }

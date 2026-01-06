@@ -13,7 +13,7 @@ export class FriendsService {
     // output : friend's name (format validated)
 
     const friend = await prismaClient.user.findUnique({ where: { username: validated.username } }) 
-    // find friend by username 
+    // find friend by username (get user id & username & etc)
     if (!friend) throw new ResponseError(400, "User not found")
       // check if the friends data exist in database
 
@@ -62,11 +62,11 @@ export class FriendsService {
         // Filters friends table (contains many relationship) to only rows where following_user_id equals currentUserId 
       },
       include: {
-        followed_user: true // fetch the friend data (oobject whole)if followed by the currentuser from user table to display the username NOT ONLY ID
+        followed_user: true // fetch the friend data (oobject whole) if followed by the currentuser from user table to display the username NOT ONLY ID
       }
     })
 
-    return friends.map(f => ({
+    return friends.map(f => ({ // map karena prisma mengembalikan data-data lain spt password yg tdk kita mau jadi harus dirapikan map (DTO) merapikan data
       id: f.followed_user.id,
       username: f.followed_user.username,
       duration_streak: f.duration_streak,
@@ -106,7 +106,7 @@ export class FriendsService {
     // friendIds = [2, 5]
 
     // 2. Query all users NOT in that list, and not current user
-    const suggestions = await prismaClient.user.findMany({
+    const suggestions = await prismaClient.user.findMany({ // tdk return map krn prisma sdh kembalikan sesuai dgn apa yg aju mau 
       where: {
         id: {
           not: currentUserId, // not the user

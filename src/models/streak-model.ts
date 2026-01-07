@@ -6,6 +6,7 @@ export interface StreakResponse {
   message: string
   current_streak: number
   has_checked_in_today: boolean
+  was_reset: boolean
 }
 
 export interface StreakStatusResponse {
@@ -15,4 +16,5 @@ export interface StreakStatusResponse {
   my_check_in_status: boolean
   friend_check_in_status: boolean
   last_updated: Date
+  was_reset: boolean
 }

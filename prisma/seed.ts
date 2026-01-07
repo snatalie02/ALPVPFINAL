@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
+    console.log("🌱 Mulai seeding workout_list...");
     const exercises = [
     {
     workout_name: "Push Up",
@@ -240,20 +241,28 @@ async function main() {
     },
 ];
 
-    console.log("Mulai seeding...");
+    // console.log("Mulai seeding...");
 
-    for (const exercise of exercises) {
-    await prisma.workoutList.create({
-    data: exercise,
+    // for (const exercise of exercises) {
+    // await prisma.workoutList.create({
+    // data: exercise,
+    // });
+//}    
+
+for (const exercise of exercises) {
+    await prisma.workoutList.upsert({
+      where: { workout_name: exercise.workout_name },
+      update: {},
+      create: exercise,
     });
-}
-
+  }
+    // console.log("Inserted:", result.workout_name);
     console.log("Seeding selesai!");
 }
 
 main()
     .catch((e) => {
-    console.error(e);
+    console.error("❌ Seeding error:",e);
     process.exit(1);
 })
 .finally(async () => {

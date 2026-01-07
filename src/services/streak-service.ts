@@ -81,6 +81,7 @@ export class StreakService {
 
     let newStreak = friendship.duration_streak
     let shouldIncrement = false
+    let wasReset = false
 
     // ❌ RESET STREAK - FIXED LOGIC
     // Reset jika:
@@ -96,6 +97,7 @@ export class StreakService {
 
     if (myMissedStreak || friendMissedStreak) {
       newStreak = 0
+      wasReset = true
     }
 
     // ✅ STREAK NAIK JIKA:
@@ -151,7 +153,8 @@ export class StreakService {
         ? "🔥 Streak increased! Both of you checked in today"
         : "Check-in recorded. Waiting for your friend.",
       current_streak: newStreak,
-      has_checked_in_today: true
+      has_checked_in_today: true,
+      was_reset: wasReset
     }
   }
 
@@ -186,13 +189,40 @@ export class StreakService {
       }
     })
 
+    const todayWIB = toWIBStartOfDay(new Date())
+const yesterdayWIB = new Date(todayWIB)
+yesterdayWIB.setDate(yesterdayWIB.getDate() - 1)
+
+const myLastWIB = friendship.time_stamp
+  ? toWIBStartOfDay(friendship.time_stamp)
+  : null
+
+const friendLastWIB = reverseFriendship?.time_stamp
+  ? toWIBStartOfDay(reverseFriendship.time_stamp)
+  : null
+
+let wasReset = false
+
+if (
+  (myLastWIB &&
+    myLastWIB.getTime() !== todayWIB.getTime() &&
+    myLastWIB.getTime() !== yesterdayWIB.getTime()) ||
+  (friendLastWIB &&
+    friendLastWIB.getTime() !== todayWIB.getTime() &&
+    friendLastWIB.getTime() !== yesterdayWIB.getTime())
+) {
+  wasReset = true
+}
+
+
     return {
       friend_id: friendId,
       friend_username: friendship.followed_user.username,
       current_streak: friendship.duration_streak,
       my_check_in_status: friendship.has_set_streak_today,
       friend_check_in_status: reverseFriendship?.has_set_streak_today || false,
-      last_updated: friendship.time_stamp
+      last_updated: friendship.time_stamp,
+      was_reset: wasReset
     }
   }
 

@@ -48,8 +48,8 @@ model Friends {
 
 model WorkoutList {
   id           Int    @id @default(autoincrement())
-  workout_name String @db.VarChar(100)
-  description String? @db.Text
+  workout_name String @unique @db.VarChar(100)
+  description String? //@db.Text
   calories_per_minute     Int @default(5)
 
   history HistoryWorkouts[]
